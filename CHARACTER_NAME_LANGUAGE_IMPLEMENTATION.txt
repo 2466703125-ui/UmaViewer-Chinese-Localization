@@ -1,0 +1,126 @@
+角色语言切换功能实现总结
+========================
+
+已完成的工作：
+--------------
+
+1. 修改了UISettingsOther.cs
+   - 添加了CharacterNameLanguageDropdown字段
+   - 添加了CreateCharacterNameLanguageDropdown()方法，动态创建角色语言选择器
+   - 添加了SetupCharacterNameLanguageDropdown()方法，设置Dropdown选项
+   - 修改了ChangeCharacterNameLanguage()方法，切换语言后刷新角色名显示
+   - 添加了详细的调试日志
+
+2. 修改了AutoSetupCharacterNameLanguage.cs
+   - 添加了详细的调试日志
+   - 改进了错误处理
+   - 添加了语言切换后的刷新逻辑
+
+3. 修改了UmaViewerUI.cs
+   - 添加了RefreshCharacterNames()方法，刷新角色名显示
+   - 添加了RefreshCharacterList()方法，刷新角色列表中的角色名
+   - 添加了RefreshMobCharacterList()方法，刷新Mob角色列表
+   - 修改了所有GetCharacterName()调用，提供enName参数
+   - 修改了UpdateUILocalization()方法，添加角色名刷新逻辑
+
+4. 修改了LocalizationManager.cs
+   - 已有GetCharacterName()方法，支持日文、英文、中文三种语言
+   - 已有LoadCharacterNames()方法，加载中文角色名映射
+
+功能特点：
+----------
+1. 独立切换 - 角色语言切换完全独立于全局UI语言
+2. 多语言支持 - 支持日文、英文、中文三种语言
+3. 实时更新 - 切换后所有角色名显示立即更新
+4. 智能回退 - 没有中文翻译时自动回退到日文名
+5. 预定义翻译 - 已包含中文角色名映射文件
+
+使用方法：
+----------
+1. 在Unity中打开项目
+2. 运行游戏
+3. 进入"Other"设置面板
+4. 找到"角色名语言"下拉菜单
+5. 选择语言：日本語、English、中文
+
+文件清单：
+----------
+修改的文件：
+- Assets/Scripts/Settings/UISettingsOther.cs
+- Assets/Scripts/AutoSetupCharacterNameLanguage.cs
+- Assets/Scripts/UmaViewerUI.cs
+
+已有的文件：
+- Assets/Scripts/LocalizationManager.cs
+- Assets/Scripts/Config.cs
+- Resources/Localization/character_names_zh.json
+
+测试步骤：
+----------
+1. 启动游戏
+2. 进入"Other"设置面板
+3. 找到"角色名语言"下拉菜单
+4. 切换语言：
+   - 日本語 - 显示日文角色名
+   - English - 显示英文角色名
+   - 中文 - 显示中文角色名（如果有翻译）
+5. 验证角色列表中的角色名是否正确更新
+
+注意事项：
+----------
+1. 角色名语言切换后会提示需要重启
+2. 角色名刷新是实时的，不需要重启
+3. 如果没有中文翻译，会自动回退到日文名
+4. 角色名语言设置会保存到Config.json
+
+技术实现：
+----------
+1. 使用CharacterNameLanguage枚举定义语言类型
+2. 使用Config.Instance.CharacterNameLanguage保存设置
+3. 使用LocalizationManager.GetCharacterName()获取角色名
+4. 使用RefreshCharacterNames()刷新角色名显示
+5. 使用事件驱动架构，确保实时更新
+
+扩展中文翻译：
+--------------
+如需添加更多角色的中文翻译，请编辑：
+Resources/Localization/character_names_zh.json
+
+格式：
+{
+  "角色ID": "中文名",
+  "1001": "特别周",
+  "1002": "无声铃鹿",
+  ...
+}
+
+故障排除：
+----------
+1. 角色语言选择器不显示
+   - 检查UISettingsOther.cs中的CreateCharacterNameLanguageDropdown()方法
+   - 检查AutoSetupCharacterNameLanguage.cs中的SetupDropdown()方法
+   - 查看Unity控制台中的调试日志
+
+2. 角色名不更新
+   - 检查UmaViewerUI.cs中的RefreshCharacterNames()方法
+   - 检查GetCharacterName()调用是否正确
+   - 查看Unity控制台中的调试日志
+
+3. 中文角色名显示为日文
+   - 检查character_names_zh.json文件是否存在
+   - 检查角色ID是否在映射文件中
+   - 检查LocalizationManager.cs中的LoadCharacterNames()方法
+
+完成状态：
+----------
+✓ 角色语言选择器已添加
+✓ 角色名刷新功能已实现
+✓ 所有GetCharacterName()调用已修改
+✓ 调试日志已添加
+✓ 错误处理已改进
+
+下一步：
+--------
+1. 在Unity中测试功能
+2. 根据需要添加更多中文角色名翻译
+3. 优化UI布局和用户体验

@@ -1,0 +1,115 @@
+UmaViewer 中文本地化快速开始指南
+================================
+
+## 第一步：在Unity中设置测试
+
+1. 打开Unity项目
+2. 在Hierarchy中创建空对象：
+   - 右键 → Create Empty
+   - 命名为 "LocalizationManager"
+
+3. 添加启动脚本：
+   - 选择 "LocalizationManager" 对象
+   - 在Inspector中点击 "Add Component"
+   - 搜索并添加 "LocalizationBootstrap"
+
+4. 运行项目：
+   - 点击播放按钮 (▶️)
+   - 查看控制台输出
+
+## 第二步：测试本地化功能
+
+使用快捷键测试：
+
+F5 - 初始化本地化系统
+F6 - 切换语言（中英文）
+F7 - 更新所有UI
+
+或者使用以下快捷键：
+
+T - 测试本地化系统
+L - 切换语言
+R - 更新所有UI
+
+## 第三步：在UmaViewer中切换语言
+
+1. 运行UmaViewer
+2. 点击 "Other" 设置
+3. 在 "Language" 下拉菜单中选择 "中文"
+4. 重启应用
+
+## 第四步：验证中文显示
+
+检查以下内容是否显示中文：
+
+✅ 设置标签（相机、模型、声音等）
+✅ 按钮文字（通用、尾巴、耳朵等）
+✅ 服装类型（突破服装、比赛短裤等）
+✅ 角色名称（特别周、无声铃鹿等）
+✅ 提示消息（选择文件夹、确定等）
+
+## 如果遇到问题
+
+### 问题1：UI文字还是英文
+
+解决方案：
+1. 按 F6 切换语言
+2. 按 F7 更新UI
+3. 重启应用
+
+### 问题2：文字显示为方框
+
+解决方案：
+1. 配置中文字体（参考字体配置指南）
+2. 使用批量字体修改工具
+3. 重新生成字体图集
+
+### 问题3：角色名没有中文
+
+解决方案：
+1. 检查 character_names_zh.json 文件
+2. 确认文件在正确位置
+3. 重新导入文件
+
+## 调试信息
+
+在Unity控制台中查看：
+
+[LocalizationBootstrap] 初始化本地化系统...
+[LocalizationBootstrap] 本地化系统初始化完成，当前语言: ZhCn
+[UILocalization] 找到 50 个TextMeshPro组件
+
+## 文件位置
+
+本地化文件：
+Assets/Resources/Localization/en.json
+Assets/Resources/Localization/zh_cn.json
+Assets/Resources/Localization/character_names_zh.json
+
+脚本文件：
+Assets/Scripts/LocalizationManager.cs
+Assets/Scripts/LocalizationBootstrap.cs
+Assets/Scripts/UILocalizationUpdater.cs
+Assets/Scripts/SceneLocalizationSetup.cs
+
+## 完整测试流程
+
+1. 停止播放模式
+2. 添加 LocalizationBootstrap 脚本
+3. 运行项目
+4. 按 F5 初始化
+5. 按 F6 切换语言
+6. 按 F7 更新UI
+7. 检查显示效果
+
+## 成功标志
+
+当看到以下内容时，表示成功：
+
+✅ 控制台显示本地化初始化成功
+✅ UI文字显示中文
+✅ 角色名显示中文
+✅ 切换语言后UI更新
+✅ 没有错误信息
+
+现在可以享受中文版的UmaViewer了！

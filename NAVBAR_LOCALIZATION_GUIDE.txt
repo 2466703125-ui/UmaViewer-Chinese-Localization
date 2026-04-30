@@ -1,0 +1,188 @@
+导航栏本地化使用指南
+====================
+
+## 问题说明
+
+导航栏标签（如"モデル"、"環境"等）存储在Unity Scene文件中，无法通过代码直接修改。
+解决方案：使用LocalizedLabel组件 + 自动挂载工具
+
+## 已创建的文件
+
+### 1. LocalizedLabel.cs
+位置：Assets/Scripts/LocalizedLabel.cs
+功能：本地化标签组件，自动根据key显示对应语言的文字
+
+### 2. AutoAssignLocalizedLabels.cs
+位置：Assets/Editor/AutoAssignLocalizedLabels.cs
+功能：自动扫描场景中的标签，根据日文原文匹配本地化键并挂载LocalizedLabel组件
+
+### 3. 更新的语言文件
+- Assets/Resources/Localization/zh_cn.json - 添加了导航栏翻译
+- Assets/Resources/Localization/en.json - 添加了导航栏翻译
+
+## 使用步骤
+
+### 步骤1：等待Unity编译
+
+1. 打开Unity项目
+2. 等待底部状态栏显示 "Script compilation finished successfully"
+3. 如果有编译错误，先解决错误
+
+### 步骤2：运行自动挂载工具
+
+在Unity菜单栏中：
+```
+Tools → Localization → Auto Assign Labels
+```
+
+点击 "开始自动挂载" 按钮
+
+### 步骤3：检查结果
+
+查看Unity控制台，应该看到类似这样的输出：
+```
+[AutoAssignLocalizedLabels] 开始扫描场景...
+[AutoAssignLocalizedLabels] 找到 50 个 Text 组件
+[AutoAssignLocalizedLabels] 找到 30 个 TextMeshProUGUI 组件
+[Assign] ModelButton: "モデル" → tab_model
+[Assign] EnvironmentButton: "環境" → tab_environment
+...
+[AutoAssignLocalizedLabels] 完成！成功挂载 20 个，跳过 60 个
+```
+
+### 步骤4：保存场景
+
+工具会自动保存场景，但你也可以手动保存：
+```
+File → Save Scene
+```
+
+### 步骤5：测试效果
+
+1. 运行项目（点击播放按钮 ▶️）
+2. 在UmaViewer中切换语言到中文
+3. 检查导航栏标签是否显示中文
+
+## 导航栏标签对照表
+
+| 日文原文 | 英文 | 中文 | 本地化键 |
+|---------|------|------|----------|
+| モデル | Model | 模型 | tab_model |
+| 環境 | Environment | 环境 | tab_environment |
+| その他 | Other | 其他 | tab_other |
+| サウンド | Sound | 声音 | tab_sound |
+| スクリーンショット | Screenshot | 截图 | tab_screenshot |
+| キャラ | Character | 人物 | tab_character |
+| 表情 | Expression | 表情 | tab_expression |
+| 動作 | Action | 动作 | tab_action |
+| 耳 | Ear | 耳朵 | tab_ear |
+| 眉 | Eyebrow | 眉毛 | tab_eyebrow |
+| 目 | Eye | 眼睛 | tab_eye |
+| 口 | Mouth | 嘴 | tab_mouth |
+| モブ | Mob | NPC | tab_mob |
+| ミニ | Mini | Q版 | tab_mini |
+| ライブ | Live | Live | tab_live |
+| ポーズ | Pose | 姿势 | tab_pose |
+
+## 如果有标签没被匹配到
+
+### 原因1：原文不在映射表中
+
+在AutoAssignLocalizedLabels.cs中添加映射：
+```csharp
+static readonly Dictionary<string, string> japaneseToKey = new Dictionary<string, string>
+{
+    // 添加新的映射
+    { "新标签原文", "tab_new_key" },
+    // ...
+};
+```
+
+同时在语言文件中添加翻译：
+```json
+{
+  "tab_new_key": "新标签翻译"
+}
+```
+
+然后重新运行自动挂载工具。
+
+### 原因2：原文有多余空格
+
+检查Scene中的实际文字，可能需要修改Trim逻辑。
+
+### 原因3：文字在子对象上
+
+工具已经遍历了FindObjectsOfType，应该能覆盖大部分情况。
+
+## 手动挂载方法
+
+如果自动工具无法匹配某些标签，可以手动挂载：
+
+1. 在Hierarchy中选择标签对象
+2. 在Inspector中点击 "Add Component"
+3. 搜索并添加 "LocalizedLabel"
+4. 在 "Key" 字段中输入本地化键名（如 tab_model）
+
+## 清除所有LocalizedLabel
+
+如果需要重新挂载，可以先清除所有：
+```
+Tools → Localization → Auto Assign Labels → 清除所有 LocalizedLabel
+```
+
+## 快捷键测试
+
+- F6 - 切换语言
+- F7 - 更新UI
+
+## 常见问题
+
+### Q: 运行工具后没有变化
+A: 
+1. 检查是否保存了场景
+2. 确认LocalizedLabel组件已挂载
+3. 运行项目后按F7更新UI
+
+### Q: 还是显示日文
+A:
+1. 检查语言是否切换到中文
+2. 确认LocalizedLabel的key字段填写正确
+3. 查看控制台是否有错误
+
+### Q: 部分标签显示为key
+A: 
+说明语言文件中缺少对应的翻译，需要添加：
+```json
+{
+  "缺少的key": "翻译内容"
+}
+```
+
+## 完整工作流程
+
+```
+1. 打开Unity项目
+2. 等待编译完成
+3. Tools → Localization → Auto Assign Labels
+4. 点击 "开始自动挂载"
+5. 检查控制台输出
+6. 保存场景
+7. 运行项目
+8. 切换语言测试
+```
+
+## 技术说明
+
+### LocalizedLabel组件原理
+1. 在Start()时订阅LocalizationManager.OnLanguageChanged事件
+2. 初始刷新一次文字
+3. 语言切换时通过事件自动刷新
+
+### 自动挂载工具原理
+1. 扫描场景中所有Text和TextMeshProUGUI组件
+2. 通过原文匹配映射表获取本地化键
+3. 自动添加LocalizedLabel组件并设置key
+4. 保存场景
+
+现在导航栏应该能正确显示中文了！
