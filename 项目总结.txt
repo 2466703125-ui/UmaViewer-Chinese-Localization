@@ -1,0 +1,80 @@
+UmaViewer 中文本地化改动总结
+================================
+
+完成日期：2026-04-29
+
+一、核心问题：TMP 字体缺少中文字形（方框根因）
+----------------------------------------------
+
+问题：
+- 导航栏标题显示为 □□
+- 原因：TextMeshPro 的 SDF 字体图集默认只包含 ASCII + 拉丁字符
+
+解决方案：
+1. 创建 ChineseChars.txt 中文字符集文件
+2. 用 Font Asset Creator 生成中文图集
+3. 设置 Fallback 字体或替换字体引用
+
+二、代码修复
+-----------
+
+1. AutoLocalizeUI.cs 修复：
+   - 添加 textToKeyCache 缓存，避免重复生成 key
+   - 修改 ProcessTextComponent，检查是否已被翻译
+   - 删除 IsAllChinese 方法
+
+2. 新增工具：
+   - ExtractChineseChars.cs - 提取中文字符集
+   - CleanDuplicateKeys.cs - 清理重复翻译 Key
+
+三、文件清单
+-----------
+
+修改的文件：
+- Assets/Scripts/Settings/UISettingsOther.cs
+- Assets/Scripts/UmaViewerUI.cs
+- Assets/Scripts/UmaViewerMain.cs
+- Assets/Scripts/LocalizationManager.cs
+- Assets/Resources/Localization/zh_cn.json
+- Assets/Scripts/Editor/AutoLocalizeUI.cs
+
+新增的文件：
+- Assets/Scripts/Editor/ExtractChineseChars.cs
+- Assets/Scripts/Editor/CleanDuplicateKeys.cs
+- Assets/Scripts/Editor/FindMissingTranslations.cs
+- Assets/Fonts/ChineseChars.txt
+- Assets/StreamingAssets/text_data_dict.json
+
+四、验证流程
+-----------
+
+1. 运行 Tools → 提取中文字符集 → 生成 ChineseChars.txt
+2. 用 Font Asset Creator 生成含中文的 TMP 字体图集
+3. 将新字体设为 Fallback 或替换场景中的字体引用
+4. 运行 Tools → 清理重复翻译 Key → 清理 zh_cn.json
+5. 运行 Tools → 自动本地化 UI → 重新扫描添加 LocalizedLabel
+6. 切换语言到中文 → 检查导航栏是否正常显示
+7. 检查所有面板标题、按钮、标签是否都有中文
+
+五、当前状态
+-----------
+
+角色名切换：✅ 完全工作
+- 日文名显示正常
+- 英文名显示正常
+- 中文名显示正常
+
+UI本地化：⚠️ 需要字体修复
+- 翻译文件已准备（408+条）
+- 需要生成中文字体图集
+- 需要设置 Fallback 字体
+
+六、下一步
+----------
+
+1. 在 Unity 中运行 Tools → 提取中文字符集
+2. 用 Font Asset Creator 生成中文字体图集
+3. 设置 Fallback 字体
+4. 运行 Tools → 清理重复翻译 Key
+5. 运行 Tools → 自动本地化 UI
+6. 测试所有 UI 文字显示正常
